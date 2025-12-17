@@ -123,12 +123,64 @@
             display: none;
         }
         
+        .frame-selection {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .frame-selection h3 {
+            color: #1877f2;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .frame-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .frame-option {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid #ddd;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+        
+        .frame-option:hover {
+            border-color: #1877f2;
+            transform: translateY(-5px);
+        }
+        
+        .frame-option.active {
+            border-color: #1877f2;
+            box-shadow: 0 5px 15px rgba(24, 119, 242, 0.3);
+        }
+        
+        .frame-option img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
         .frame-preview {
             text-align: center;
             margin-top: 20px;
             padding: 15px;
             background: #f8f9fa;
             border-radius: 10px;
+            display: none;
         }
         
         .frame-preview h3 {
@@ -136,6 +188,7 @@
             margin-bottom: 10px;
         }
         
+
         .frame-sample {
             width: 150px;
             height: 150px;
@@ -264,7 +317,7 @@
         
         footer {
             margin-top: 30px;
-            color: white;
+            color: #333;
             text-align: center;
             padding: 20px;
             font-size: 0.9rem;
@@ -280,10 +333,6 @@
             text-align: center;
             color: #1877f2;
             font-weight: bold;
-        }
-
-        .display_none{
-            display: none;
         }
         
         @media (max-width: 768px) {
@@ -303,6 +352,15 @@
             
             h1 {
                 font-size: 2.2rem;
+            }
+            
+            .frame-options {
+                gap: 10px;
+            }
+            
+            .frame-option {
+                width: 100px;
+                height: 100px;
             }
         }
         
@@ -383,12 +441,24 @@
                     <input type="file" id="imageInput" accept="image/*">
                 </div>
                 
-                <div class="frame-preview display_none">
-                    <h3>আপনার ফ্রেম</h3>
-                    <div class="frame-sample">
-                        <img id="framePreviewImg" src="" alt="Frame Preview">
+                <div class="frame-selection">
+                    <h3>ফ্রেম সিলেক্ট করুন</h3>
+                    <div class="frame-options">
+                        <div class="frame-option active" data-frame="Frame-01.png">
+                            <img src="Frame-01.png" alt="Frame 01" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzE4NzdmMiIvPjx0ZXh0IHg9IjYwIiB5PSI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RnJhbWUgMDE8L3RleHQ+PC9zdmc+'">
+                        </div>
+                        <div class="frame-option" data-frame="Frame-02.png">
+                            <img src="Frame-02.png" alt="Frame 02" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzQyYjcyYSIvPjx0ZXh0IHg9IjYwIiB5PSI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RnJhbWUgMDI8L3RleHQ+PC9zdmc+'">
+                        </div>
                     </div>
-                    <p class="size-info"></p>
+                    <p class="size-info">সিলেক্টেড ফ্রেমটি আপনার ছবির সাথে অ্যাপ্লাই হবে</p>
+                </div>
+                
+                <div class="frame-preview display_none">
+                    <h3>সিলেক্টেড ফ্রেম প্রিভিউ</h3>
+                    <div class="frame-sample">
+                        <img id="framePreviewImg" src="Frame-01.png" alt="Selected Frame Preview" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iI2YwZjJmNSIvPjx0ZXh0IHg9Ijc1IiB5PSI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjODg4YThkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GcmFtZSBQcmV2aWV3PC90ZXh0Pjwvc3ZnPg=='">
+                    </div>
                 </div>
             </div>
             
@@ -397,7 +467,7 @@
                 
                 <div class="preview-container">
                     <img id="previewImage" src="" alt="Uploaded Image Preview" class="hidden">
-                    <img id="frameOverlay" src="" alt="Frame Overlay">
+                    <img id="frameOverlay" src="Frame-01.png" alt="Frame Overlay">
                     <div id="defaultPreview" class="default-preview">
                         <i class="fas fa-user-circle" style="font-size: 8rem; text-align: center; align-self: center; padding: 30px; margin-top:-100px; color: #78a3d7;"></i>
                         <p style="margin-top:0px; color: #8a8d91;">ছবি আপলোড করুন প্রিভিউ দেখতে</p>
@@ -458,14 +528,14 @@
                     <p>ক্লিক করুন আপলোড এরিয়াতে অথবা ছবি টানুন ওইখানে</p>
                 </div>
                 <div class="step">
-                    <i class="fas fa-crop-alt"></i>
-                    <h4>২. পজিশন ঠিক করুন</h4>
-                    <p>জুম ইন/আউট এবং উপরে-নিচে সরিয়ে পজিশন ঠিক করুন</p>
+                    <i class="fas fa-images"></i>
+                    <h4>২. ফ্রেম সিলেক্ট করুন</h4>
+                    <p>দুইটি ফ্রেমের মধ্যে থেকে আপনার পছন্দের ফ্রেমটি সিলেক্ট করুন</p>
                 </div>
                 <div class="step">
-                    <i class="fas fa-eye"></i>
-                    <h4>৩. প্রিভিউ দেখুন</h4>
-                    <p>আপনার ফ্রেমযুক্ত প্রোফাইল পিকচার দেখুন স্কয়ার ফরম্যাটে</p>
+                    <i class="fas fa-crop-alt"></i>
+                    <h4>৩. পজিশন ঠিক করুন</h4>
+                    <p>জুম ইন/আউট এবং উপরে-নিচে সরিয়ে পজিশন ঠিক করুন</p>
                 </div>
                 <div class="step">
                     <i class="fas fa-download"></i>
@@ -494,6 +564,7 @@
         const posYValue = document.getElementById('posYValue');
         const downloadStatus = document.getElementById('downloadStatus');
         const statusMessage = document.getElementById('statusMessage');
+        const frameOptions = document.querySelectorAll('.frame-option');
         
         // Control buttons
         const zoomInBtn = document.getElementById('zoomInBtn');
@@ -505,7 +576,7 @@
         const moveRightBtn = document.getElementById('moveRightBtn');
         
         // Frame settings
-        const frameImageURL = 'frame final.png';
+        let selectedFrame = 'Frame-01.png'; // Default frame
         
         // Image transformation state
         let scale = 1;
@@ -517,11 +588,27 @@
         let originalImageWidth = 0;
         let originalImageHeight = 0;
         
-        // Load the frame image
-        frameOverlay.src = frameImageURL;
-        framePreviewImg.src = frameImageURL;
+        // Event Listeners for frame selection
+        frameOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                frameOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to clicked option
+                this.classList.add('active');
+                
+                // Update selected frame
+                selectedFrame = this.getAttribute('data-frame');
+                
+                // Update preview frame
+                frameOverlay.src = selectedFrame;
+                framePreviewImg.src = selectedFrame;
+                
+                console.log(`Frame selected: ${selectedFrame}`);
+            });
+        });
         
-        // Event Listeners
+        // Event Listeners for upload
         uploadArea.addEventListener('click', () => {
             imageInput.click();
         });
@@ -722,13 +809,14 @@
                     // Draw the user's image with "cover" effect
                     ctx.drawImage(uploadedImage, offsetX, offsetY, drawWidth, drawHeight);
                     
-                    // Draw frame overlay on top
+                    // Draw selected frame overlay on top
                     ctx.drawImage(frameImg, 0, 0, 2048, 2048);
                     
                     // Create download link
                     const link = document.createElement('a');
                     const timestamp = new Date().getTime();
-                    link.download = `profile-picture-${timestamp}.png`;
+                    const frameName = selectedFrame.replace('.png', '').replace('-', ' ');
+                    link.download = `profile-picture-with-${frameName}-${timestamp}.png`;
                     
                     // Convert canvas to data URL
                     const dataURL = canvas.toDataURL('image/png');
@@ -744,8 +832,8 @@
                     // Trigger the download
                     link.dispatchEvent(clickEvent);
                     
-                    // Show success message without console
-                    showStatus('ছবি ডাউনলোড হচ্ছে!');
+                    // Show success message
+                    showStatus(`ছবি ডাউনলোড শুরু হয়েছে!`);
                     
                     // Reset button after a delay
                     setTimeout(() => {
@@ -847,15 +935,16 @@
                 }
             };
             
-            frameImg.src = frameImageURL;
+            frameImg.src = selectedFrame;
         }
         
         // Initialize with frame loading
         window.onload = function() {
             // Check if frame loads successfully
             frameOverlay.onerror = function() {
-                // Silent error handling - don't show alert
-                framePreviewImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iI2YwZjJmNSIvPjx0ZXh0IHg9Ijc1IiB5PSI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjODg4YThkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GcmFtZSBJbWFnZTwvdGV4dD48dGV4dCB4PSI3NSIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM4ODhhOGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxvYWQgZmFpbGVkPC90ZXh0Pjwvc3ZnPg==';
+                // If frame fails to load, show placeholder
+                const frameName = selectedFrame.replace('.png', '').replace('-', ' ');
+                console.log(`Frame ${frameName} could not be loaded`);
             };
         };
     </script>
