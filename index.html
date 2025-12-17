@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Profile Picture Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="fav.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@100..900&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif Bengali', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffffff, #edeced);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1877F2;
+            padding: 20px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content:center;
+            gap:40px;
+            width:100%;
+            margin-bottom:30px;
+        }
+        
+        .upload-section, .preview-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #1877f2;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: #1877f2;
+        }
+        
+        .upload-area {
+            border: 3px dashed #1877f2;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            background-color: #f0f8ff;
+        }
+        
+        .upload-area:hover {
+            background-color: #e1f0ff;
+            transform: translateY(-5px);
+        }
+        
+        .upload-area i {
+            font-size: 4rem;
+            color: #1877f2;
+            margin-bottom: 15px;
+        }
+        
+        .upload-area p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .upload-area span {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        #imageInput {
+            display: none;
+        }
+        
+        .frame-preview {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .frame-preview h3 {
+            color: #1877f2;
+            margin-bottom: 10px;
+        }
+        
+        .frame-sample {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+        
+        .frame-sample img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .preview-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 30px;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 5px solid #e4e6eb;
+        }
+        
+        #previewImage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            border-radius: 0;
+            transition: transform 0.3s ease;
+        }
+        
+        #frameOverlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            object-fit: contain;
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(to right, #1877f2, #0d5cb6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(to right, #0d5cb6, #0a4a9c);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .download-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .instructions {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .instructions h3 {
+            color: #1877f2;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .step i {
+            font-size: 2.5rem;
+            color: #1877f2;
+            margin-bottom: 10px;
+        }
+        
+        .step h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        footer {
+            margin-top: 30px;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            width: 100%;
+        }
+        
+        .size-info {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            color: #1877f2;
+            font-weight: bold;
+        }
+
+        .display_none{
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .upload-section, .preview-section {
+                width: 100%;
+            }
+            
+            .preview-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .preview-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 8px 15px;
+            background: #e4e6eb;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .control-btn:hover {
+            background: #d8dadf;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 5px;
+            margin: 5px;
+        }
+        
+        .zoom-level {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .download-status {
+            margin-top: 10px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .download-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .download-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fab fa-facebook-square"></i> প্রোফাইল তৈরী করুন</h1>
+        </header>
+        
+        <div class="main-content">
+            <div class="upload-section">
+                <h2 class="section-title" style="text-align: center;"><i class="fas fa-upload"></i> ছবি আপলোড করুন</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>ক্লিক করুন অথবা ছবি টানুন এখানে</p>
+                    <span>সাপোর্টেড ফরম্যাট: JPG, PNG, WEBP (ম্যাক্স সাইজ: 10MB)</span>
+                    <input type="file" id="imageInput" accept="image/*">
+                </div>
+                
+                <div class="frame-preview display_none">
+                    <h3>আপনার ফ্রেম</h3>
+                    <div class="frame-sample">
+                        <img id="framePreviewImg" src="" alt="Frame Preview">
+                    </div>
+                    <p class="size-info"></p>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <h2 class="section-title"><i class="fas fa-eye"></i> প্রিভিউ</h2>
+                
+                <div class="preview-container">
+                    <img id="previewImage" src="" alt="Uploaded Image Preview" class="hidden">
+                    <img id="frameOverlay" src="" alt="Frame Overlay">
+                    <div id="defaultPreview" class="default-preview">
+                        <i class="fas fa-user-circle" style="font-size: 8rem; text-align: center; align-self: center; padding: 30px; margin-top:-100px; color: #78a3d7;"></i>
+                        <p style="margin-top:0px; color: #8a8d91;">ছবি আপলোড করুন প্রিভিউ দেখতে</p>
+                    </div>
+                </div>
+                
+                <div class="preview-controls">
+                    <div class="control-group">
+                        <button id="zoomInBtn" class="control-btn" title="Zoom In">
+                            <i class="fas fa-search-plus"></i> জুম ইন
+                        </button>
+                        <button id="zoomOutBtn" class="control-btn" title="Zoom Out">
+                            <i class="fas fa-search-minus"></i> জুম আউট
+                        </button>
+                        <button id="resetZoomBtn" class="control-btn" title="Reset Zoom">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    <div class="control-group">
+                        <button id="moveUpBtn" class="control-btn" title="Move Up">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button id="moveDownBtn" class="control-btn" title="Move Down">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                    </div>
+                    <div class="control-group">
+                        <button id="moveLeftBtn" class="control-btn" title="Move Left">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <button id="moveRightBtn" class="control-btn" title="Move Right">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="zoom-level">
+                    জুম লেভেল: <span id="zoomLevel">100%</span> | 
+                    পজিশন: X: <span id="posXValue">0</span>, Y: <span id="posYValue">0</span>
+                </div>
+                
+                <div id="downloadStatus" class="download-status">
+                    <i class="fas fa-check-circle"></i> <span id="statusMessage">ছবি ডাউনলোড শুরু হয়েছে!</span>
+                </div>
+                
+                <button id="downloadBtn" class="download-btn" disabled>
+                    <i class="fas fa-download"></i>ডাউনলোড করুন
+                </button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>কিভাবে ব্যবহার করবেন</h3>
+            <div class="steps">
+                <div class="step">
+                    <i class="fas fa-upload"></i>
+                    <h4>১. ছবি আপলোড করুন</h4>
+                    <p>ক্লিক করুন আপলোড এরিয়াতে অথবা ছবি টানুন ওইখানে</p>
+                </div>
+                <div class="step">
+                    <i class="fas fa-crop-alt"></i>
+                    <h4>২. পজিশন ঠিক করুন</h4>
+                    <p>জুম ইন/আউট এবং উপরে-নিচে সরিয়ে পজিশন ঠিক করুন</p>
+                </div>
+                <div class="step">
+                    <i class="fas fa-eye"></i>
+                    <h4>৩. প্রিভিউ দেখুন</h4>
+                    <p>আপনার ফ্রেমযুক্ত প্রোফাইল পিকচার দেখুন স্কয়ার ফরম্যাটে</p>
+                </div>
+                <div class="step">
+                    <i class="fas fa-download"></i>
+                    <h4>৪. ডাউনলোড করুন</h4>
+                    <p>HD সাইজে সম্পূর্ণ কভার করে ডাউনলোড করুন</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 Profile Picture Generator | আপনার ফ্রেমের সাথে প্রোফাইল ছবি তৈরি করুন</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const imageInput = document.getElementById('imageInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const previewImage = document.getElementById('previewImage');
+        const frameOverlay = document.getElementById('frameOverlay');
+        const framePreviewImg = document.getElementById('framePreviewImg');
+        const defaultPreview = document.getElementById('defaultPreview');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const zoomLevel = document.getElementById('zoomLevel');
+        const posXValue = document.getElementById('posXValue');
+        const posYValue = document.getElementById('posYValue');
+        const downloadStatus = document.getElementById('downloadStatus');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // Control buttons
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const resetZoomBtn = document.getElementById('resetZoomBtn');
+        const moveUpBtn = document.getElementById('moveUpBtn');
+        const moveDownBtn = document.getElementById('moveDownBtn');
+        const moveLeftBtn = document.getElementById('moveLeftBtn');
+        const moveRightBtn = document.getElementById('moveRightBtn');
+        
+        // Frame settings
+        const frameImageURL = 'frame final.png';
+        
+        // Image transformation state
+        let scale = 1;
+        let posX = 0;
+        let posY = 0;
+        let uploadedImage = null;
+        
+        // Store original image dimensions
+        let originalImageWidth = 0;
+        let originalImageHeight = 0;
+        
+        // Load the frame image
+        frameOverlay.src = frameImageURL;
+        framePreviewImg.src = frameImageURL;
+        
+        // Event Listeners
+        uploadArea.addEventListener('click', () => {
+            imageInput.click();
+        });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#d4e9ff';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.backgroundColor = '#f0f8ff';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#f0f8ff';
+            
+            if (e.dataTransfer.files.length) {
+                const file = e.dataTransfer.files[0];
+                if (file.type.startsWith('image/')) {
+                    handleImageUpload(file);
+                } else {
+                    alert('দুঃখিত, শুধুমাত্র ছবি ফাইল আপলোড করা যাবে।');
+                }
+            }
+        });
+        
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+        
+        // Control buttons event listeners
+        zoomInBtn.addEventListener('click', () => {
+            scale = Math.min(scale + 0.1, 3);
+            updatePreview();
+        });
+        
+        zoomOutBtn.addEventListener('click', () => {
+            scale = Math.max(scale - 0.1, 0.5);
+            updatePreview();
+        });
+        
+        resetZoomBtn.addEventListener('click', () => {
+            scale = 1;
+            posX = 0;
+            posY = 0;
+            updatePreview();
+        });
+        
+        moveUpBtn.addEventListener('click', () => {
+            posY -= 10;
+            updatePreview();
+        });
+        
+        moveDownBtn.addEventListener('click', () => {
+            posY += 10;
+            updatePreview();
+        });
+        
+        moveLeftBtn.addEventListener('click', () => {
+            posX -= 10;
+            updatePreview();
+        });
+        
+        moveRightBtn.addEventListener('click', () => {
+            posX += 10;
+            updatePreview();
+        });
+        
+        // Download button
+        downloadBtn.addEventListener('click', downloadProfilePicture);
+        
+        // Functions
+        function handleImageUpload(file) {
+            // Check file size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('ছবির সাইজ খুব বড়! সর্বোচ্চ 10MB সাইজের ছবি আপলোড করা যাবে।');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                uploadedImage = new Image();
+                uploadedImage.onload = function() {
+                    // Store original dimensions
+                    originalImageWidth = uploadedImage.width;
+                    originalImageHeight = uploadedImage.height;
+                    
+                    // Show the uploaded image and hide default preview
+                    previewImage.src = e.target.result;
+                    previewImage.classList.remove('hidden');
+                    defaultPreview.classList.add('hidden');
+                    
+                    // Reset transformations
+                    scale = 1;
+                    posX = 0;
+                    posY = 0;
+                    updatePreview();
+                    
+                    // Enable download button
+                    downloadBtn.disabled = false;
+                    
+                    // Update upload area text
+                    uploadArea.innerHTML = `
+                        <i class="fas fa-check-circle" style="color: #42b72a;"></i>
+                        <p>ছবি আপলোড সফল হয়েছে!</p>
+                        <span>${file.name} (${originalImageWidth}×${originalImageHeight})</span>
+                        <br><br>
+                        <small>জুম ইন/আউট এবং পজিশন ঠিক করুন</small>
+                    `;
+                };
+                uploadedImage.src = e.target.result;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        function updatePreview() {
+            if (!uploadedImage) return;
+            
+            // Update the preview image with transformations
+            previewImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+            
+            // Update zoom and position indicators
+            zoomLevel.textContent = `${Math.round(scale * 100)}%`;
+            posXValue.textContent = posX;
+            posYValue.textContent = posY;
+        }
+        
+        function showStatus(message, isError = false) {
+            statusMessage.textContent = message;
+            downloadStatus.className = isError ? 'download-status download-error' : 'download-status download-success';
+            downloadStatus.style.display = 'block';
+            
+            // Hide status after 3 seconds
+            setTimeout(() => {
+                downloadStatus.style.display = 'none';
+            }, 3000);
+        }
+        
+        function downloadProfilePicture() {
+            if (!uploadedImage) return;
+            
+            // Show loading state
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রস্তুত হচ্ছে...';
+            downloadBtn.disabled = true;
+            
+            // Create a canvas element with 2048x2048 size
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048;
+            canvas.height = 2048;
+            const ctx = canvas.getContext('2d');
+            
+            // Create temporary image for frame
+            const frameImg = new Image();
+            frameImg.crossOrigin = "anonymous";
+            
+            frameImg.onload = function() {
+                try {
+                    // Fill background with white
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, 2048, 2048);
+                    
+                    // Calculate aspect ratios
+                    const canvasAspect = 2048 / 2048;
+                    const imageAspect = originalImageWidth / originalImageHeight;
+                    
+                    let drawWidth, drawHeight, offsetX, offsetY;
+                    
+                    // Calculate dimensions for "cover" effect
+                    if (imageAspect > canvasAspect) {
+                        // Image is wider than canvas
+                        drawHeight = 2048;
+                        drawWidth = originalImageWidth * (2048 / originalImageHeight);
+                    } else {
+                        // Image is taller than canvas
+                        drawWidth = 2048;
+                        drawHeight = originalImageHeight * (2048 / originalImageWidth);
+                    }
+                    
+                    // Apply user's zoom level
+                    drawWidth *= scale;
+                    drawHeight *= scale;
+                    
+                    // Calculate offset to center the image
+                    offsetX = (2048 - drawWidth) / 2;
+                    offsetY = (2048 - drawHeight) / 2;
+                    
+                    // Apply user's position adjustments
+                    const positionScale = 2048 / 400;
+                    offsetX += posX * positionScale;
+                    offsetY += posY * positionScale;
+                    
+                    // Draw the user's image with "cover" effect
+                    ctx.drawImage(uploadedImage, offsetX, offsetY, drawWidth, drawHeight);
+                    
+                    // Draw frame overlay on top
+                    ctx.drawImage(frameImg, 0, 0, 2048, 2048);
+                    
+                    // Create download link
+                    const link = document.createElement('a');
+                    const timestamp = new Date().getTime();
+                    link.download = `profile-picture-${timestamp}.png`;
+                    
+                    // Convert canvas to data URL
+                    const dataURL = canvas.toDataURL('image/png');
+                    link.href = dataURL;
+                    
+                    // Create a click event and trigger it
+                    const clickEvent = new MouseEvent('click', {
+                        view: window,
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    
+                    // Trigger the download
+                    link.dispatchEvent(clickEvent);
+                    
+                    // Show success message without console
+                    showStatus('ছবি ডাউনলোড হচ্ছে!');
+                    
+                    // Reset button after a delay
+                    setTimeout(() => {
+                        downloadBtn.innerHTML = originalText;
+                        downloadBtn.disabled = false;
+                    }, 1500);
+                    
+                } catch (error) {
+                    // Show error message
+                    showStatus('ডাউনলোডে সমস্যা হয়েছে! আবার চেষ্টা করুন।', true);
+                    
+                    // Reset button
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                }
+            };
+            
+            frameImg.onerror = function() {
+                try {
+                    // If frame fails to load, proceed without frame
+                    // Fill background with white
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, 2048, 2048);
+                    
+                    // Calculate aspect ratios
+                    const canvasAspect = 2048 / 2048;
+                    const imageAspect = originalImageWidth / originalImageHeight;
+                    
+                    let drawWidth, drawHeight, offsetX, offsetY;
+                    
+                    // Calculate dimensions for "cover" effect
+                    if (imageAspect > canvasAspect) {
+                        // Image is wider than canvas
+                        drawHeight = 2048;
+                        drawWidth = originalImageWidth * (2048 / originalImageHeight);
+                    } else {
+                        // Image is taller than canvas
+                        drawWidth = 2048;
+                        drawHeight = originalImageHeight * (2048 / originalImageWidth);
+                    }
+                    
+                    // Apply user's zoom level
+                    drawWidth *= scale;
+                    drawHeight *= scale;
+                    
+                    // Calculate offset to center the image
+                    offsetX = (2048 - drawWidth) / 2;
+                    offsetY = (2048 - drawHeight) / 2;
+                    
+                    // Apply user's position adjustments
+                    const positionScale = 2048 / 400;
+                    offsetX += posX * positionScale;
+                    offsetY += posY * positionScale;
+                    
+                    // Draw the user's image
+                    ctx.drawImage(uploadedImage, offsetX, offsetY, drawWidth, drawHeight);
+                    
+                    // Draw a border
+                    ctx.strokeStyle = '#1877f2';
+                    ctx.lineWidth = 20;
+                    ctx.strokeRect(10, 10, 2028, 2028);
+                    
+                    // Add watermark text
+                    ctx.fillStyle = '#1877f2';
+                    ctx.font = 'bold 80px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Profile Picture', 1024, 160);
+                    
+                    // Create download link
+                    const link = document.createElement('a');
+                    const timestamp = new Date().getTime();
+                    link.download = `profile-picture-${timestamp}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    
+                    // Trigger the download
+                    const clickEvent = new MouseEvent('click', {
+                        view: window,
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    link.dispatchEvent(clickEvent);
+                    
+                    // Show success message
+                    showStatus('ছবি ডাউনলোড শুরু হয়েছে (ফ্রেম ছাড়া)! সাইজ: 2048×2048 পিক্সেল');
+                    
+                    // Reset button after a delay
+                    setTimeout(() => {
+                        downloadBtn.innerHTML = originalText;
+                        downloadBtn.disabled = false;
+                    }, 1500);
+                    
+                } catch (error) {
+                    // Show error message
+                    showStatus('ডাউনলোডে সমস্যা হয়েছে! আবার চেষ্টা করুন।', true);
+                    
+                    // Reset button
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                }
+            };
+            
+            frameImg.src = frameImageURL;
+        }
+        
+        // Initialize with frame loading
+        window.onload = function() {
+            // Check if frame loads successfully
+            frameOverlay.onerror = function() {
+                // Silent error handling - don't show alert
+                framePreviewImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iI2YwZjJmNSIvPjx0ZXh0IHg9Ijc1IiB5PSI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjODg4YThkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GcmFtZSBJbWFnZTwvdGV4dD48dGV4dCB4PSI3NSIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM4ODhhOGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxvYWQgZmFpbGVkPC90ZXh0Pjwvc3ZnPg==';
+            };
+        };
+    </script>
+</body>
+</html>
